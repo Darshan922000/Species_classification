@@ -5,7 +5,6 @@ import uvicorn
 import pandas as pd
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
-import os
 
 # Load the trained model...
 with open('./model/model.pkl', 'rb') as f:
@@ -29,14 +28,6 @@ class FishInput(BaseModel):
     Length3: float
     Height: float
     Width: float
-
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-# Use an absolute path to load the model
-model_path = os.path.join(BASE_DIR, "model", "model.pkl")
-with open(model_path, 'rb') as f:
-    model = pickle.load(f)
 
 # Serve the frontend (index.html)
 @app.get("/", response_class=HTMLResponse)
