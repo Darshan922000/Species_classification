@@ -57,5 +57,5 @@ async def predict_species(input_data: FishInput):
     
     return {"predicted_species": predicted_species[0]}
 
-if __name__ == "__main__":
-    uvicorn.run("main:app", host = "0.0.0.0", port = 8000)
+'''if __name__ == "__main__":
+    uvicorn.run("main:app", host = "0.0.0.0", port = 8000)'''
