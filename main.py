@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import pickle
 import uvicorn
-import numpy as np
 import pandas as pd
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
