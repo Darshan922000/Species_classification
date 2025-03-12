@@ -5,6 +5,7 @@ import uvicorn
 import pandas as pd
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
+import os
 
 # Load the trained model...
 with open('./model/model.pkl', 'rb') as f:
@@ -28,9 +29,14 @@ class FishInput(BaseModel):
     Length3: float
     Height: float
     Width: float
-@app.get("/predict")
-async def get_predict_info():
-    return {"message": "Please send a POST request with fish feature values to get a prediction."}
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Use an absolute path to load the model
+model_path = os.path.join(BASE_DIR, "model", "model.pkl")
+with open(model_path, 'rb') as f:
+    model = pickle.load(f)
 
 # Serve the frontend (index.html)
 @app.get("/", response_class=HTMLResponse)
@@ -51,5 +57,5 @@ async def predict_species(input_data: FishInput):
     
     return {"predicted_species": predicted_species[0]}
 
-'''if __name__ == "__main__":
-    uvicorn.run("main:app", host = "0.0.0.0", port = 8000)'''
+if __name__ == "__main__":
+    uvicorn.run("main:app", host = "0.0.0.0", port = 8000)
