@@ -4,14 +4,23 @@ import pickle
 import uvicorn
 import numpy as np
 import pandas as pd
+from fastapi.middleware.cors import CORSMiddleware
 
-# Load the trained model from the pickle file
+# Load the trained model...
 with open('./model/model.pkl', 'rb') as f:
     model = pickle.load(f)
 
 app = FastAPI()
 
-# Define the expected input schema using Pydantic
+# Add CORS middleware to allow requests from any origin...
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 class FishInput(BaseModel):
     Weight: float
     Length1: float
@@ -19,15 +28,18 @@ class FishInput(BaseModel):
     Length3: float
     Height: float
     Width: float
+@app.get("/predict")
+async def get_predict_info():
+    return {"message": "Please send a POST request with fish feature values to get a prediction."}
 
 @app.post("/predict")
 async def predict_species(input_data: FishInput):
-    # Convert the input data to a dictionary
+    
     input_dict = input_data.model_dump()
-    # Create a DataFrame from the dictionary to include valid feature names
+    
     features_df = pd.DataFrame([input_dict])
     
-    # Make a prediction using the loaded model
+    # Make a prediction...
     predicted_species = model.predict(features_df)
     
     return {"predicted_species": predicted_species[0]}

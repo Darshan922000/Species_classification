@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fish Species Prediction</title>
+  <style>
+    /* Basic styling for the container and form */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      height: 100vh;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 20px;
+      width: 300px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      margin-top: 15px;
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Fish Species Prediction</h1>
+    <form id="predictionForm">
+      <label for="Weight">Weight:</label>
+      <input type="number" step="any" id="Weight" name="Weight" required />
+
+      <label for="Length1">Length1:</label>
+      <input type="number" step="any" id="Length1" name="Length1" required />
+
+      <label for="Length2">Length2:</label>
+      <input type="number" step="any" id="Length2" name="Length2" required />
+
+      <label for="Length3">Length3:</label>
+      <input type="number" step="any" id="Length3" name="Length3" required />
+
+      <label for="Height">Height:</label>
+      <input type="number" step="any" id="Height" name="Height" required />
+
+      <label for="Width">Width:</label>
+      <input type="number" step="any" id="Width" name="Width" required />
+
+      <button type="submit">Predict Species</button>
+    </form>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    // When the form is submitted, gather input values and make an API call
+    const form = document.getElementById('predictionForm');
+    const resultDiv = document.getElementById('result');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Create an object from the form values
+      const formData = new FormData(form);
+      const data = {};
+      formData.forEach((value, key) => {
+        data[key] = parseFloat(value);
+      });
+
+      try {
+        const response = await fetch('http://localhost:8000/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const result = await response.json();
+        resultDiv.textContent = 'Predicted Species: ' + result.predicted_species;
+      } catch (error) {
+        console.error('Error:', error);
+        resultDiv.textContent = 'Error: ' + error.message;
+      }
+    });
+  </script>
+</body>
+</html>
