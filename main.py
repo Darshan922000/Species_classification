@@ -5,6 +5,7 @@ import uvicorn
 import numpy as np
 import pandas as pd
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 
 # Load the trained model...
 with open('./model/model.pkl', 'rb') as f:
@@ -32,6 +33,13 @@ class FishInput(BaseModel):
 async def get_predict_info():
     return {"message": "Please send a POST request with fish feature values to get a prediction."}
 
+# Serve the frontend (index.html)
+@app.get("/", response_class=HTMLResponse)
+async def read_index():
+    with open("index.html", "r") as file:
+        html_content = file.read()
+    return HTMLResponse(content=html_content)
+
 @app.post("/predict")
 async def predict_species(input_data: FishInput):
     
@@ -44,5 +52,5 @@ async def predict_species(input_data: FishInput):
     
     return {"predicted_species": predicted_species[0]}
 
-if __name__ == "__main__":
-    uvicorn.run("main:app", host = "0.0.0.0", port = 8000)
+'''if __name__ == "__main__":
+    uvicorn.run("main:app", host = "0.0.0.0", port = 8000)'''
